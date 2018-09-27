@@ -1,6 +1,6 @@
-/**
+/******************************************************************************
  * Constants
- */
+ *****************************************************************************/
 const CELL_WIDTH = 101;
 const CELL_HEIGHT = 83;
 
@@ -10,7 +10,9 @@ const GRID_COLUMNS = 5;
 const PLAYER_OFFSET_X = 0;
 const PLAYER_OFFSET_Y = -35;
 
-// Enemies our player must avoid
+/******************************************************************************
+ * Enemy
+ *****************************************************************************/
 const Enemy = function(
     startX = 0, startY = -35,
     speed = 10,
@@ -35,9 +37,9 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+/******************************************************************************
+ * Player
+ *****************************************************************************/
 const Player = function(
     sprite = 'images/char-boy.png'
 ) {
@@ -103,6 +105,10 @@ Player.prototype.moveToGridCell = function(i, j) {
     }
 };
 
+/******************************************************************************
+ * Utils
+ *****************************************************************************/
+
 function getPositionFromCell(i, j, offsetX, offsetY) {
 
     let x = j * CELL_WIDTH + offsetX;
@@ -118,6 +124,10 @@ function isWithinGrid(i, j) {
             && j >= 0 && j <= GRID_COLUMNS-1;
     return within;
 };
+
+/******************************************************************************
+ * Setup
+ *****************************************************************************/
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
