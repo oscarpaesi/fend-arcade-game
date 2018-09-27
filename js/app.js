@@ -62,9 +62,6 @@ Player.prototype.handleInput = function(key) {
     let message = `Key pressed: ${key}`
     console.log(message);
 
-    const horStep = 101;
-    const vertStep = 83;
-
     const newGridPos = {
         j: this.gridJ,
         i: this.gridI
