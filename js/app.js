@@ -10,32 +10,55 @@ const GRID_COLUMNS = 5;
 const PLAYER_OFFSET_X = 0;
 const PLAYER_OFFSET_Y = -35;
 
+const ENEMY_COUNT = 3;
+
+const ENEMY_OFFSET_X = 0;
+const ENEMY_OFFSET_Y = -35;
+
+const ENEMY_MAX_X = 505;
+const ENEMY_MIN_SPEED = 200;
+const ENEMY_MAX_SPEED = 500;
+
 /******************************************************************************
  * Enemy
  *****************************************************************************/
 const Enemy = function(
-    startX = 0, startY = -35,
-    speed = 10,
     sprite = 'images/enemy-bug.png'
 ) {
-    this.x = startX;
-    this.y = startY;
-    this.speed = speed;
+    this.x = ENEMY_OFFSET_X;
+    this.y = ENEMY_OFFSET_Y;
     this.sprite = sprite;
+
+    this.reset();
 };
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
+
+    this.x += this.speed * dt;
+
+    if (this.x > ENEMY_MAX_X) {
+        this.reset();
+    }
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
+
+Enemy.prototype.reset = function() {
+
+    this.speed = ENEMY_MIN_SPEED + Math.random() * (ENEMY_MAX_SPEED - ENEMY_MIN_SPEED + 1);
+
+    const startCellI = getRandomInt(1, 3); // Random stone row
+    const startCellJ = -1; // Starts to the left of the screen
+    const newPos = getPositionFromCell(startCellI, startCellJ, ENEMY_OFFSET_X, ENEMY_OFFSET_Y);
+
+    this.x = newPos.x;
+    this.y = newPos.y;
+}
 
 /******************************************************************************
  * Player
@@ -122,16 +145,20 @@ function isWithinGrid(i, j) {
     return within;
 };
 
+function getRandomInt(min, max) {
+    return Math.floor(min + Math.random() * Math.floor(max - min + 1));
+}
+
 /******************************************************************************
  * Setup
  *****************************************************************************/
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
-const allEnemies = [
-    new Enemy(),
-    new Enemy()
-];
+const allEnemies = [];
+for (let i = 0; i < ENEMY_COUNT; i++) {
+    allEnemies[i] = new Enemy();
+}
 
 // Place the player object in a variable called player
 const player = new Player();
