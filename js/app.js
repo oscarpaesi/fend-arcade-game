@@ -75,6 +75,9 @@ const Player = function(
 
 Player.prototype.update = function() {
 
+    if (this.gridI === 0) {
+        this.moveToGridCell(5, 2);
+    }
 };
 
 Player.prototype.render = function() {
