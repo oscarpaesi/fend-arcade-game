@@ -4,6 +4,12 @@
 const CELL_WIDTH = 101;
 const CELL_HEIGHT = 83;
 
+const GRID_ROWS = 6;
+const GRID_COLUMNS = 5;
+
+const PLAYER_OFFSET_X = 0;
+const PLAYER_OFFSET_Y = -35;
+
 // Enemies our player must avoid
 const Enemy = function(
     startX = 0, startY = -35,
@@ -33,11 +39,12 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 const Player = function(
-    startX = 0, startY = -35,
     sprite = 'images/char-boy.png'
 ) {
-    this.x = startX;
-    this.y = startY;
+    this.x = PLAYER_OFFSET_X;
+    this.y = PLAYER_OFFSET_Y;
+    this.gridJ = 0;
+    this.gridI = 0;
     this.sprite = sprite;
 };
 
@@ -56,61 +63,74 @@ Player.prototype.handleInput = function(key) {
     const horStep = 101;
     const vertStep = 83;
 
-    const newPos = {
-        x: this.x,
-        y: this.y
+    const newGridPos = {
+        j: this.gridJ,
+        i: this.gridI
     };
 
     switch(key) {
         case 'left':
-            newPos.x -= horStep;
+            newGridPos.j--;
             break;
         case 'up':
-            newPos.y -= vertStep;
+            newGridPos.i--;
             break;
         case 'right':
-            newPos.x += horStep;
+            newGridPos.j++;
             break;
         case 'down':
-            newPos.y += vertStep;
+            newGridPos.i++;
             break;
         default:
             // Do nothing
             break;
     };
 
-    if (isInside(newPos)) {
-        this.x = newPos.x;
-        this.y = newPos.y;
-    }
+    this.moveToGridCell(newGridPos.i, newGridPos.j);
 
     message = `Current position: (${this.x}, ${this.y})`;
     console.log(message);
 };
 
-function isInside(pos) {
-    const inside = pos.x >= 0 && pos.x <= 404
-            && pos.y >= -35 && pos.y <= 380;
-    return inside;
+Player.prototype.moveToGridCell = function(i, j) {
+
+    if (isWithinGrid(i, j)) {
+        this.gridI = i;
+        this.gridJ = j;
+        const newPos = getPositionFromCell(i, j, PLAYER_OFFSET_X, PLAYER_OFFSET_Y);
+        this.x = newPos.x;
+        this.y = newPos.y;
+    }
+};
+
+function getPositionFromCell(i, j, offsetX, offsetY) {
+
+    let x = j * CELL_WIDTH + offsetX;
+    let y = i * CELL_HEIGHT + offsetY;
+
+    return {
+        x, y
+    };
+}
+
+function isWithinGrid(i, j) {
+    const within = i >= 0 && i <= GRID_ROWS-1
+            && j >= 0 && j <= GRID_COLUMNS-1;
+    return within;
 };
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
 const allEnemies = [
     new Enemy(),
     new Enemy()
 ];
 
-// Places the player in the (0, 0) cell
-let playerStartX = 0;
-let playerStartY = -35;
+// Place the player object in a variable called player
+const player = new Player();
 
-// Moves to cell (2, 5)
-playerStartX += CELL_WIDTH * 2;
-playerStartY += CELL_HEIGHT * 5;
-
-const player = new Player(playerStartX, playerStartY);
+// Places the player in the (5, 2) cell
+player.moveToGridCell(5, 2);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
