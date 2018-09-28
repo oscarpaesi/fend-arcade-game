@@ -19,6 +19,8 @@ const ENEMY_MAX_X = 505;
 const ENEMY_MIN_SPEED = 200;
 const ENEMY_MAX_SPEED = 500;
 
+const COLLISION_RADIUS = 20;
+
 /******************************************************************************
  * Enemy
  *****************************************************************************/
@@ -41,6 +43,17 @@ Enemy.prototype.update = function(dt) {
     if (this.x > ENEMY_MAX_X) {
         this.reset();
     }
+
+    // Check collison with player
+    const playerPos = {
+        x: player.x, y: player.y
+    };
+    const enemyPos = {
+        x: this.x, y: this.y
+    };
+    if (isColliding(playerPos, enemyPos, COLLISION_RADIUS)) {
+         player.reset();
+    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -58,7 +71,7 @@ Enemy.prototype.reset = function() {
 
     this.x = newPos.x;
     this.y = newPos.y;
-}
+};
 
 /******************************************************************************
  * Player
@@ -75,8 +88,9 @@ const Player = function(
 
 Player.prototype.update = function() {
 
+    // Check winning condition
     if (this.gridI === 0) {
-        this.moveToGridCell(5, 2);
+        this.reset();
     }
 };
 
@@ -85,6 +99,7 @@ Player.prototype.render = function() {
 };
 
 Player.prototype.handleInput = function(key) {
+
     let message = `Key pressed: ${key}`
     console.log(message);
 
@@ -115,6 +130,10 @@ Player.prototype.handleInput = function(key) {
 
     message = `Current position: (${this.x}, ${this.y})`;
     console.log(message);
+};
+
+Player.prototype.reset = function() {
+    this.moveToGridCell(5, 2);
 };
 
 Player.prototype.moveToGridCell = function(i, j) {
@@ -150,7 +169,13 @@ function isWithinGrid(i, j) {
 
 function getRandomInt(min, max) {
     return Math.floor(min + Math.random() * Math.floor(max - min + 1));
-}
+};
+
+function isColliding(posA, posB, radius) {
+    const dx = posB.x - posA.x;
+    const dy = posB.y - posA.y;
+    return (dx * dx) + (dy * dy) < (2 * radius * radius);
+};
 
 /******************************************************************************
  * Setup
