@@ -100,9 +100,6 @@ Player.prototype.render = function() {
 
 Player.prototype.handleInput = function(key) {
 
-    let message = `Key pressed: ${key}`
-    console.log(message);
-
     const newGridPos = {
         j: this.gridJ,
         i: this.gridI
@@ -127,9 +124,6 @@ Player.prototype.handleInput = function(key) {
     };
 
     this.moveToGridCell(newGridPos.i, newGridPos.j);
-
-    message = `Current position: (${this.x}, ${this.y})`;
-    console.log(message);
 };
 
 Player.prototype.reset = function() {
