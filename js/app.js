@@ -24,6 +24,15 @@ const COLLISION_RADIUS = 20;
 /******************************************************************************
  * Enemy
  *****************************************************************************/
+
+/**
+ * @description Enemies run through stone rows from left to right.
+ * When an enemy reaches the end of the screen, its position is reset,
+ * to give the impression that it is a new enemy.
+ * @constructor
+ * @param {string} sprite - The path to the sprite to be used to draw
+ * this enemy.
+ */
 const Enemy = function(
     sprite = 'images/enemy-bug.png'
 ) {
@@ -34,14 +43,19 @@ const Enemy = function(
     this.reset();
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+/**
+ * @description Updates the enemy position, based on 'dt', and checks for
+ * collision with the player.
+ * @param {number} dt - A time delta between ticks.
+ */
 Enemy.prototype.update = function(dt) {
 
     this.x += this.speed * dt;
 
+    // If the enemy has left the screen, reset it
     if (this.x > ENEMY_MAX_X) {
         this.reset();
+        return;
     }
 
     // Check collison with player
@@ -56,11 +70,17 @@ Enemy.prototype.update = function(dt) {
     }
 };
 
-// Draw the enemy on the screen, required method for game
+/**
+ * @description Draws the enemy image on the screen.
+ */
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+/**
+ * @description Resets the enemy to the left of the screen and assigns
+ * a random stone row for it to run on.
+ */
 Enemy.prototype.reset = function() {
 
     this.speed = ENEMY_MIN_SPEED + Math.random() * (ENEMY_MAX_SPEED - ENEMY_MIN_SPEED + 1);
@@ -76,6 +96,16 @@ Enemy.prototype.reset = function() {
 /******************************************************************************
  * Player
  *****************************************************************************/
+
+ /**
+ * @description The player can move through the screen in four directions
+ * (up, right, down, left).
+ * Once it reaches a water block, its position is reset to a grass block.
+ *
+ * @constructor
+ * @param {string} sprite - The path to the sprite to be used to draw
+ * the player.
+ */
 const Player = function(
     sprite = 'images/char-boy.png'
 ) {
@@ -86,6 +116,11 @@ const Player = function(
     this.sprite = sprite;
 };
 
+/**
+ * @description Updates the position of the player based on the last
+ * movement triggered by the user. Also checks whether the player has
+ * reached a water block.
+ */
 Player.prototype.update = function() {
 
     // Check winning condition
@@ -94,10 +129,18 @@ Player.prototype.update = function() {
     }
 };
 
+/**
+ * @description Draws the player image on the screen.
+ */
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+/**
+ * @description Sets the player's grid coordinates based on the keys
+ * that the user presses.
+ * @param {string} key - A string representing the key that was pressed.
+ */
 Player.prototype.handleInput = function(key) {
 
     const newGridPos = {
@@ -126,10 +169,18 @@ Player.prototype.handleInput = function(key) {
     this.moveToGridCell(newGridPos.i, newGridPos.j);
 };
 
+/**
+ * @description Resets the player to a grass block.
+ */
 Player.prototype.reset = function() {
     this.moveToGridCell(5, 2);
 };
 
+/**
+ * @description Updates the 'x' and 'y' coordinates based on a grid coordinate.
+ * @param {number} i - The row of the cell.
+ * @param {number} j - The column of the cell.
+ */
 Player.prototype.moveToGridCell = function(i, j) {
 
     if (isWithinGrid(i, j)) {
@@ -145,6 +196,15 @@ Player.prototype.moveToGridCell = function(i, j) {
  * Utils
  *****************************************************************************/
 
+ /**
+  * @description Converts from grid to cartesian coordinates, based on the
+  * default cell dimensions, and adjusts by a given offset.
+  * @param {number} i - The row of the cell.
+  * @param {number} j - The column of the cell.
+  * @param {number} offsetX - The horizontal offset.
+  * @param {number} offsetY - The vertical offset.
+  * @returns {object} An object with the 'x' and 'y' coordinates.
+  */
 function getPositionFromCell(i, j, offsetX, offsetY) {
 
     let x = j * CELL_WIDTH + offsetX;
@@ -155,16 +215,38 @@ function getPositionFromCell(i, j, offsetX, offsetY) {
     };
 }
 
+/**
+ * @description Checks whether the given grid coordinates for a cell
+ * are within the limits of the grid.
+ * @param {number} i - The row of the cell.
+ * @param {number} j - The column of the cell.
+ * @returns {boolean} <code>true</code> if the cell is within the grid, <code>false</code> otherwise.
+ */
 function isWithinGrid(i, j) {
     const within = i >= 0 && i <= GRID_ROWS-1
             && j >= 0 && j <= GRID_COLUMNS-1;
     return within;
 };
 
+/**
+ * @description Gives a random integer number in the closed interval [min, max].
+ * @param {number} min - The minimum value.
+ * @param {number} max - The maximum value.
+ * @returns {number} A number between 'min' and 'max'.
+ */
 function getRandomInt(min, max) {
     return Math.floor(min + Math.random() * Math.floor(max - min + 1));
 };
 
+/**
+ * @description Checks whether two objects, A and B, are colliding, given
+ * their centers and a collision radius.
+ * @param {number} posA - The center of object A.
+ * @param {number} posB - The center of object B.
+ * @param {number} radius - The radius of collision around the centers
+ * of objects A and B.
+ * @returns {boolean} <code>true</code> if the two objects are colliding, <code>false</code> otherwise.
+ */
 function isColliding(posA, posB, radius) {
     const dx = posB.x - posA.x;
     const dy = posB.y - posA.y;
@@ -175,21 +257,20 @@ function isColliding(posA, posB, radius) {
  * Setup
  *****************************************************************************/
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
+// Create enemies
 const allEnemies = [];
 for (let i = 0; i < ENEMY_COUNT; i++) {
     allEnemies[i] = new Enemy();
 }
 
-// Place the player object in a variable called player
+// Create player
 const player = new Player();
 
-// Places the player in the (5, 2) cell
+// Moves the player to its initial block
 player.moveToGridCell(5, 2);
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+// Listens for key presses and sends the keys to the
+// Player.handleInput() method.
 document.addEventListener('keyup', function(e) {
     const allowedKeys = {
         37: 'left',
