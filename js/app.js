@@ -226,7 +226,7 @@ function isWithinGrid(i, j) {
     const within = i >= 0 && i <= GRID_ROWS-1
             && j >= 0 && j <= GRID_COLUMNS-1;
     return within;
-};
+}
 
 /**
  * @description Gives a random integer number in the closed interval [min, max].
@@ -236,7 +236,7 @@ function isWithinGrid(i, j) {
  */
 function getRandomInt(min, max) {
     return Math.floor(min + Math.random() * Math.floor(max - min + 1));
-};
+}
 
 /**
  * @description Checks whether two objects, A and B, are colliding, given
@@ -251,7 +251,7 @@ function isColliding(posA, posB, radius) {
     const dx = posB.x - posA.x;
     const dy = posB.y - posA.y;
     return (dx * dx) + (dy * dy) < (2 * radius * radius);
-};
+}
 
 /******************************************************************************
  * Setup
