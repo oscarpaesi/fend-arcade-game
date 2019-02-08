@@ -18,5 +18,5 @@ Walk the boy from the grass all the way up, and into the water, avoiding the bug
 
 [udacity]: <https://www.udacity.com/>
 [fend]: <https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001>
-[github-page]: <https://github.com/oscarpaesi/fend-arcade-game>
+[github-page]: <https://oscarpaesi.github.io/fend-arcade-game/>
 [assignment-repo]: <https://github.com/udacity/frontend-nanodegree-arcade-game>
