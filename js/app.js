@@ -22,6 +22,30 @@ const ENEMY_MAX_SPEED = 500;
 const COLLISION_RADIUS = 20;
 
 /******************************************************************************
+ * Character
+ *****************************************************************************/
+
+ /**
+ * @description Characters are elements of the game that are drawn as a sprite
+ * and have a position on the screen.
+ * @constructor
+ * @param {string} sprite - The path to the sprite to be used to draw
+ * this character.
+ */
+const Character = function(sprite, x, y) {
+    this.sprite = sprite;
+    this.x = x;
+    this.y = y;
+};
+
+/**
+ * @description Draws the player image on the screen.
+ */
+Character.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+/******************************************************************************
  * Enemy
  *****************************************************************************/
 
@@ -36,12 +60,14 @@ const COLLISION_RADIUS = 20;
 const Enemy = function(
     sprite = 'images/enemy-bug.png'
 ) {
-    this.x = ENEMY_OFFSET_X;
-    this.y = ENEMY_OFFSET_Y;
-    this.sprite = sprite;
-
+    Character.call(this, sprite, ENEMY_OFFSET_X, ENEMY_OFFSET_Y);
     this.reset();
 };
+
+/**
+ * Make Enemy inherit methods and properties from Character.
+ */
+Enemy.prototype = Object.create(Character.prototype);
 
 /**
  * @description Updates the enemy position, based on 'dt', and checks for
@@ -68,13 +94,6 @@ Enemy.prototype.update = function(dt) {
     if (isColliding(playerPos, enemyPos, COLLISION_RADIUS)) {
          player.reset();
     }
-};
-
-/**
- * @description Draws the enemy image on the screen.
- */
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 /**
@@ -109,12 +128,15 @@ Enemy.prototype.reset = function() {
 const Player = function(
     sprite = 'images/char-boy.png'
 ) {
-    this.x = PLAYER_OFFSET_X;
-    this.y = PLAYER_OFFSET_Y;
+    Character.call(this, sprite, PLAYER_OFFSET_X, PLAYER_OFFSET_Y);
     this.gridJ = 0;
     this.gridI = 0;
-    this.sprite = sprite;
 };
+
+/**
+ * Make Player inherit methods and properties from Character.
+ */
+Player.prototype = Object.create(Character.prototype);
 
 /**
  * @description Updates the position of the player based on the last
@@ -127,13 +149,6 @@ Player.prototype.update = function() {
     if (this.gridI === 0) {
         this.reset();
     }
-};
-
-/**
- * @description Draws the player image on the screen.
- */
-Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 /**
