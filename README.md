@@ -1,8 +1,8 @@
 # Arcade Game
 A simple arcade game inspired by the classic Frogger.
 
-This is a project assignment for [Udacity's][udacity] [Front End Wed Developer Nanodegree][fend].
-The base for the project, containing visual assets and a simple game engine are available at [this repository][assignment-repo].
+This is a project assignment for [Udacity's][udacity] [Front End Web Developer Nanodegree][fend].
+The base for the project, containing visual assets and a simple game engine is available at [this repository][assignment-repo].
 
 # Getting Started
 You can run the game on your browser, by clicking [here][github-page].
